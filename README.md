@@ -10,6 +10,10 @@
 
 > [!Caution]
 > **Misuse Disclaimer:** <br>
+> This repo isn't Rustdesk's official repo!!!
+
+> [!Caution]
+> **Misuse Disclaimer:** <br>
 > The developers of RustDesk do not condone or support any unethical or illegal use of this software. Misuse, such as unauthorized access, control or invasion of privacy, is strictly against our guidelines. The authors are not responsible for any misuse of the application.
 
 

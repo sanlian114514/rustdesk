@@ -5,7 +5,7 @@ name: Build flutter-rust-bridge
 on:
   workflow_call:
     secrets:      
-      SUBMODULE_TOKEN:        
+      HBB_COMMON_TOKEN:        
         required: true
 
 env:

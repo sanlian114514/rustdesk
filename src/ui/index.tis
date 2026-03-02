@@ -1078,6 +1078,7 @@ class PasswordArea: Reactor.Component {
             { !show_password ? '' : <div .separator /> }
             { !show_password ? '' : <li #use-temporary-password><span>{svg_checkmark}</span>{translate('Use one-time password')}</li> }
             { !show_password ? '' : <li #use-permanent-password><span>{svg_checkmark}</span>{translate('Use permanent password')}</li> }
+            { !show_password ? '' : <li id="enable-hide-cm" class={ handler.get_option('hide_cm') == 'true' ? 'selected' : 'line-through' }><span>{svg_checkmark}</span>{translate('Hide connection management window')}</li> }
             { !show_password ? '' : <li #use-both-passwords><span>{svg_checkmark}</span>{translate('Use both passwords')}</li> }
             { !show_password ? '' : <div .separator /> }
             { !show_password || disable_change_permanent_password ? '' : <li #set-password  disabled={ method == 'use-temporary-password' ? "true" : "false" }>{translate('Set permanent password')}</li> }
@@ -1115,6 +1116,14 @@ class PasswordArea: Reactor.Component {
             }
             if (el.id == "tfa")
                 el.attributes.toggleClass("selected", has_valid_2fa);
+            if (el.id == "enable-hide-cm") {
+                var hide_cm_enabled = handler.get_option('hide_cm') == 'true';
+                el.attributes.toggleClass('selected', hide_cm_enabled);
+                el.attributes.toggleClass('line-through', !hide_cm_enabled);
+                if (handler.is_option_fixed('hide_cm')) {
+                    el.state.disabled = true;
+                }
+            }
         }
     }
 
@@ -1164,6 +1173,12 @@ class PasswordArea: Reactor.Component {
             else
                 approve_mode = default_option_approve_mode;
             handler.set_option('approve-mode', approve_mode);
+            this.toggleMenuState();
+            passwordArea.update();
+        } else if (me.id == 'enable-hide-cm') {
+            var cur = handler.get_option('hide_cm') || '';
+            var next = cur == 'true' ? '' : 'true';
+            handler.set_option('hide_cm', next);
             this.toggleMenuState();
             passwordArea.update();
         }

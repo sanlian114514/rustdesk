@@ -50,6 +50,8 @@ env:
 jobs:
   generate-bridge:
     uses: ./.github/workflows/bridge.yml
+    secrets: 
+      HBB_COMMON_TOKEN: ${{ secrets.HBB_COMMON_TOKEN }}
 
   build-RustDeskTempTopMostWindow:
     uses: ./.github/workflows/third-party-RustDeskTempTopMostWindow.yml

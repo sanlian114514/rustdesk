@@ -1571,17 +1571,13 @@ String translate(String name) {
 // sciter: Does not have the function, but it should be kept the same.
 bool option2bool(String option, String value) {
   bool res;
-  if (option.startsWith("enable-")) {
+  if (option.startsWith("enable-") || option == kOptionAllowRemoteConfigModification || option == "allow-hide-cm") {
     res = value != "N";
   } else if (option.startsWith("allow-") ||
       option == kOptionStopService ||
       option == kOptionDirectServer ||
       option == kOptionForceAlwaysRelay) {
-    if (option == kOptionAllowRemoteConfigModification || option == "allow-hide-cm") {
-      res = value != "N";
-    } else {
-      res = value == "Y";
-    }
+    res = value == "Y";
   } else {
     // "" is true
     res = value != "N";

@@ -1078,7 +1078,7 @@ class PasswordArea: Reactor.Component {
             { !show_password ? '' : <div .separator /> }
             { !show_password ? '' : <li #use-temporary-password><span>{svg_checkmark}</span>{translate('Use one-time password')}</li> }
             { !show_password ? '' : <li #use-permanent-password><span>{svg_checkmark}</span>{translate('Use permanent password')}</li> }
-            { !show_password ? '' : <li #enable-hide-cm><span>{svg_checkmark}</span>{translate('Hide connection management window')}</li> }
+            { approve_mode == 'password' ? '' : <li #enable-hide-cm><span>{svg_checkmark}</span>{translate('Hide connection management window')}</li> }
             { !show_password ? '' : <li #use-both-passwords><span>{svg_checkmark}</span>{translate('Use both passwords')}</li> }
             { !show_password ? '' : <div .separator /> }
             { !show_password || disable_change_permanent_password ? '' : <li #set-password  disabled={ method == 'use-temporary-password' ? "true" : "false" }>{translate('Set permanent password')}</li> }
@@ -1119,7 +1119,6 @@ class PasswordArea: Reactor.Component {
                 el.attributes.toggleClass("selected", has_valid_2fa);
             if (el.id == "enable-hide-cm") {
                 el.attributes.toggleClass("selected", hide_cm_enabled);
-                el.attributes.toggleClass("line-through", !hide_cm_enabled);
                 if (handler.is_option_fixed("allow-hide-cm")) {
                     el.state.disabled = true;
                 }
@@ -1162,8 +1161,6 @@ class PasswordArea: Reactor.Component {
         if (me.state.disabled) return;
         if (me.id.indexOf('use-') == 0) {
             handler.set_option('verification-method', me.id);
-            this.toggleMenuState();
-            passwordArea.update();
         } else if (me.id.indexOf('approve-mode') == 0) {
             var approve_mode;
             if (me.id == 'approve-mode-password')
@@ -1173,17 +1170,15 @@ class PasswordArea: Reactor.Component {
             else
                 approve_mode = default_option_approve_mode;
             handler.set_option('approve-mode', approve_mode);
-            this.toggleMenuState();
-            passwordArea.update();
         } else if (me.id == 'enable-hide-cm') {
             var cur = handler.get_option('allow-hide-cm') || '';
             var next = cur === 'Y' ? 'N' :
                         cur === 'N' ? 'Y' :
                         'N';
             handler.set_option('allow-hide-cm', next);
-            this.toggleMenuState();
-            passwordArea.update();
         }
+        this.toggleMenuState();
+        passwordArea.update();
     }
 
     event click $(li#tfa) {

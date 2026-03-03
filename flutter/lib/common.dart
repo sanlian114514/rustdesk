@@ -1577,7 +1577,7 @@ bool option2bool(String option, String value) {
       option == kOptionStopService ||
       option == kOptionDirectServer ||
       option == kOptionForceAlwaysRelay) {
-    if (option == kOptionAllowRemoteConfigModification) {
+    if (option == kOptionAllowRemoteConfigModification || option == "allow-hide-cm") {
       res = value != "N";
     } else {
       res = value == "Y";

@@ -141,7 +141,7 @@ class ServerModel with ChangeNotifier {
     hideCm = option2bool(
         'allow-hide-cm', bind.mainGetOptionSync(key: 'allow-hide-cm'));
     if (!(approveMode == 'password' &&
-        verificationMethod == kUsePermanentPassword)) {
+        (verificationMethod == kUsePermanentPassword || verificationMethod == kUseBothPasswords))) {
       hideCm = true;
     }
 
@@ -239,7 +239,7 @@ class ServerModel with ChangeNotifier {
     var hideCm = option2bool(
         'allow-hide-cm', await bind.mainGetOption(key: 'allow-hide-cm'));
     if (!(approveMode == 'password' &&
-        verificationMethod == kUsePermanentPassword)) {
+        (verificationMethod == kUsePermanentPassword || verificationMethod == kUseBothPasswords))) {
       hideCm = true;
     }
 

@@ -26,6 +26,7 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 import '../../common/widgets/dialog.dart';
 import '../../common/widgets/login.dart';
+import '../../models/server_model.dart';
 
 const double _kTabWidth = 200;
 const double _kTabHeight = 42;
@@ -1390,7 +1391,7 @@ class _SafetyState extends State<_Safety> with AutomaticKeepAliveClientMixin {
         value: gFFI.serverModel,
         child: Consumer<ServerModel>(builder: (context, model, child) {
           final enableHideCm = model.approveMode == 'password' &&
-              model.verificationMethod == kUsePermanentPassword;
+              (model.verificationMethod == kUsePermanentPassword || model.verificationMethod == kUseBothPasswords);
           onHideCmChanged(bool? b) {
             if (b != null) {
               bind.mainSetOption(

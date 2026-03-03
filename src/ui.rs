@@ -118,7 +118,7 @@ pub fn start(args: &mut [String]) {
             Box::new(cm::SciterConnectionManager::new())
         });
         page = "cm.html";
-        *cm::HIDE_CM.lock().unwrap() = crate::ipc::get_config("hide_cm")
+        *cm::HIDE_CM.lock().unwrap() = crate::ipc::get_config("allow-hide-cm")
             .ok()
             .flatten()
             .unwrap_or_default()

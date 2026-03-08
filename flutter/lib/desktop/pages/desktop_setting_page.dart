@@ -1424,6 +1424,7 @@ class _SafetyState extends State<_Safety> with AutomaticKeepAliveClientMixin {
                 ),
               ));
         }));
+  }
 
   List<Widget> autoDisconnect(BuildContext context) {
     TextEditingController controller = TextEditingController();

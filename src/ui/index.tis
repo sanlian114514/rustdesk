@@ -1101,7 +1101,7 @@ class PasswordArea: Reactor.Component {
         if (pwd_id != 'use-temporary-password' && pwd_id != 'use-permanent-password')
             pwd_id = 'use-both-passwords';
         var has_valid_2fa = handler.has_valid_2fa();
-        var hide_cm_enabled = handler.get_option("allow-hide-cm") == 'Y' || handler.get_option("allow-hide-cm") == '';
+        var hide_cm_enabled = handler.get_option("allow-hide-cm") == 'Y';
         for (var el in this.$$(menu#edit-password-context>li)) {
             if (el.id.indexOf("approve-mode-") == 0) {
                 el.attributes.toggleClass("selected", el.id == mode_id);
@@ -1171,11 +1171,7 @@ class PasswordArea: Reactor.Component {
                 approve_mode = default_option_approve_mode;
             handler.set_option('approve-mode', approve_mode);
         } else if (me.id == 'enable-hide-cm') {
-            var cur = handler.get_option('allow-hide-cm') || '';
-            var next = cur === 'Y' ? 'N' :
-                        cur === 'N' ? 'Y' :
-                        'N';
-            handler.set_option('allow-hide-cm', next);
+            handler.set_option('allow-hide-cm', handler.get_option('allow-hide-cm') == 'Y' ? 'N' : 'Y');
         }
         this.toggleMenuState();
         passwordArea.update();

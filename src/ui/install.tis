@@ -7,8 +7,8 @@ var install_path = "";
 class Install: Reactor.Component {
     function render() {
         const install_options = JSON.parse(view.install_options());
-        const desktop_icon = { checked: install_options?.DESKTOPSHORTCUTS == '0' ? false : true };
-        const startmenu_shortcuts = { checked: install_options?.STARTMENUSHORTCUTS == '0' ? false : true };
+        const desktop_icon = { checked: install_options?.DESKTOPSHORTCUTS == '1' ? true : false };
+        const startmenu_shortcuts = { checked: install_options?.STARTMENUSHORTCUTS == '1' ? true : false };
         return <div .content>
             <div style="font-size: 2em;">{translate('Installation')}</div>
             <div style="margin: 2em 0;">{translate('Installation Path')} {": "}<input|text disabled value={view.install_path()} #path_input />

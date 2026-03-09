@@ -1182,15 +1182,20 @@ pub fn lock_screen() {
 const IS1: &str = "{54E86BC2-6C85-41F3-A9EB-1A94AC9B1F93}_is1";
 
 fn get_subkey(name: &str, wow: bool) -> String {
+    // let tmp = format!(
+    //     "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{}",
+    //     name
+    // );
     let tmp = format!(
-        "HKEY_LOCAL_MACHINE\\Software\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\{}",
+        "HKEY_CLASSES_ROOT\\.rustdesk\\Uninstall\\{}",
         name
     );
-    if wow {
-        tmp.replace("Microsoft", "Wow6432Node\\Microsoft")
-    } else {
-        tmp
-    }
+    // if wow {
+    //     tmp.replace("Microsoft", "Wow6432Node\\Microsoft")
+    // } else {
+    //     tmp
+    // }
+    tmp
 }
 
 fn get_valid_subkey() -> String {

@@ -122,7 +122,7 @@ pub fn start(args: &mut [String]) {
             .ok()
             .flatten()
             .unwrap_or_default()
-            == "Y";
+            != "N";
     } else if (args[0] == "--connect"
         || args[0] == "--file-transfer"
         || args[0] == "--port-forward"

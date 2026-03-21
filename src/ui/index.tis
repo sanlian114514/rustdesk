@@ -1101,7 +1101,7 @@ class PasswordArea: Reactor.Component {
         if (pwd_id != 'use-temporary-password' && pwd_id != 'use-permanent-password')
             pwd_id = 'use-both-passwords';
         var has_valid_2fa = handler.has_valid_2fa();
-        var hide_cm_enabled = handler.get_option("allow-hide-cm") == 'Y';
+        var hide_cm_enabled = handler.get_option("allow-hide-cm") != 'N';
         for (var el in this.$$(menu#edit-password-context>li)) {
             if (el.id.indexOf("approve-mode-") == 0) {
                 el.attributes.toggleClass("selected", el.id == mode_id);
@@ -1171,7 +1171,7 @@ class PasswordArea: Reactor.Component {
                 approve_mode = default_option_approve_mode;
             handler.set_option('approve-mode', approve_mode);
         } else if (me.id == 'enable-hide-cm') {
-            handler.set_option('allow-hide-cm', handler.get_option('allow-hide-cm') == 'Y' ? 'N' : 'Y');
+            handler.set_option('allow-hide-cm', handler.get_option('allow-hide-cm') != 'N' ? 'N' : 'Y');
         }
         this.toggleMenuState();
         passwordArea.update();
@@ -1439,7 +1439,7 @@ function check_if_overlay() {
     } else if (is_enabled_by_control_permissions == "false") {
         enabled = false;
     } else {
-        enabled = handler.get_option('allow-remote-config-modification') == 'Y' || handler.get_option('allow-remote-config-modification') == '';
+        enabled = handler.get_option('allow-remote-config-modification') != 'N';
     }
     if (!enabled) {
         var time0 = getTime();

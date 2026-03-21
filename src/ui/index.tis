@@ -580,7 +580,11 @@ class MyIdMenu: Reactor.Component {
                 el.attributes.toggleClass("selected", enabled);
                 el.attributes.toggleClass("line-through", !enabled);
             } else if (id.indexOf("allow-") == 0) {
-                var enabled = handler.get_option(id) == "Y";
+                if (id == "allow-remote-config-modification") {
+                    var enabled = handler.get_option(id) != "N";
+                } else {
+                    var enabled = handler.get_option(id) == "Y";
+                }
                 el.attributes.toggleClass("selected", enabled);
                 el.attributes.toggleClass("line-through", !enabled);
             } else if (id == "whitelist") {
@@ -618,7 +622,11 @@ class MyIdMenu: Reactor.Component {
             handler.set_option(me.id, handler.get_option(me.id) == "N" ? default_option_yes : "N");
         }
         if (me.id && me.id.indexOf("allow-") == 0) {
-            handler.set_option(me.id, handler.get_option(me.id) == "Y" ? default_option_no : "Y");
+            if (me.id == "allow-remote-config-modification") {
+                handler.set_option(me.id, handler.get_option(me.id) != "N" ? "N" : default_option_yes);
+            } else {
+                handler.set_option(me.id, handler.get_option(me.id) == "Y" ? default_option_no : "Y");
+            }
         }
         if (me.id == "whitelist") {
             open_whitelist_dialog();

@@ -140,8 +140,8 @@ class ServerModel with ChangeNotifier {
     final approveMode = bind.mainGetOptionSync(key: kOptionApproveMode);
     hideCm = option2bool(
         'allow-hide-cm', bind.mainGetOptionSync(key: 'allow-hide-cm'));
-    if (approveMode == 'password') {
-      hideCm = true;
+    if (approveMode != 'password') {
+      hideCm = false;
     }
 
     timerCallback() async {
@@ -237,8 +237,8 @@ class ServerModel with ChangeNotifier {
 
     var hideCm = option2bool(
         'allow-hide-cm', await bind.mainGetOption(key: 'allow-hide-cm'));
-    if (approveMode == 'password') {
-      hideCm = true;
+    if (approveMode != 'password') {
+      hideCm = false;
     }
 
     if (_approveMode != approveMode) {

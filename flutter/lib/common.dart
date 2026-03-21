@@ -1595,7 +1595,7 @@ String bool2option(String option, bool b) {
       option == kOptionStopService ||
       option == kOptionDirectServer ||
       option == kOptionForceAlwaysRelay) {
-    res = b ? 'Y' : defaultOptionNo;
+    res = b ? 'Y' : 'N';
   } else {
     res = b ? 'Y' : 'N';
   }

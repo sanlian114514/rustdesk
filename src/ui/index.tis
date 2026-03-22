@@ -624,7 +624,7 @@ class MyIdMenu: Reactor.Component {
         }
         if (me.id && me.id.indexOf("allow-") == 0) {
             if (me.id == "allow-remote-config-modification") {
-                handler.set_option(me.id, handler.get_option(me.id) != "N" ? "N" : default_option_yes);
+                handler.set_option(me.id, handler.get_option(me.id) != "N" ? "N" : "Y");
             } else {
                 handler.set_option(me.id, handler.get_option(me.id) == "Y" ? default_option_no : "Y");
             }
@@ -1087,7 +1087,7 @@ class PasswordArea: Reactor.Component {
             { !show_password ? '' : <div .separator /> }
             { !show_password ? '' : <li #use-temporary-password><span>{svg_checkmark}</span>{translate('Use one-time password')}</li> }
             { !show_password ? '' : <li #use-permanent-password><span>{svg_checkmark}</span>{translate('Use permanent password')}</li> }
-            { approve_mode == 'password' ? '' : <li #enable-hide-cm><span>{svg_checkmark}</span>{translate('Hide connection management window')}</li> }
+            { approve_mode != 'password' ? '' : <li #enable-hide-cm><span>{svg_checkmark}</span>{translate('Hide connection management window')}</li> }
             { !show_password ? '' : <li #use-both-passwords><span>{svg_checkmark}</span>{translate('Use both passwords')}</li> }
             { !show_password ? '' : <div .separator /> }
             { !show_password || disable_change_permanent_password ? '' : <li #set-password  disabled={ method == 'use-temporary-password' ? "true" : "false" }>{translate('Set permanent password')}</li> }
@@ -1128,9 +1128,6 @@ class PasswordArea: Reactor.Component {
                 el.attributes.toggleClass("selected", has_valid_2fa);
             if (el.id == "enable-hide-cm") {
                 el.attributes.toggleClass("selected", hide_cm_enabled);
-                if (handler.is_option_fixed("allow-hide-cm")) {
-                    el.state.disabled = true;
-                }
             }
         }
     }

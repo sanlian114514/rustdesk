@@ -118,11 +118,6 @@ pub fn start(args: &mut [String]) {
             Box::new(cm::SciterConnectionManager::new())
         });
         page = "cm.html";
-        *cm::HIDE_CM.lock().unwrap() = crate::ipc::get_config("allow-hide-cm")
-            .ok()
-            .flatten()
-            .unwrap_or_default()
-            != "N";
     } else if (args[0] == "--connect"
         || args[0] == "--file-transfer"
         || args[0] == "--port-forward"
@@ -183,6 +178,11 @@ pub fn start(args: &mut [String]) {
             .unwrap_or("".to_owned()),
         page
     ));
+    *cm::HIDE_CM.lock().unwrap() = crate::ipc::get_config("allow-hide-cm")
+        .ok()
+        .flatten()
+        .unwrap_or_default()
+        != "N";
     let hide_cm = *cm::HIDE_CM.lock().unwrap();
     if !args.is_empty() && args[0] == "--cm" && hide_cm {
         // run_app calls expand(show) + run_loop, we use collapse(hide) + run_loop instead to create a hidden window

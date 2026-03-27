@@ -576,16 +576,12 @@ class MyIdMenu: Reactor.Component {
             var id = el.id;
             if (!id) continue;
             var is_opt_fixed = handler.is_option_fixed(id);
-            if (id.indexOf("enable-") == 0) {
+            if (id.indexOf("enable-") == 0 || id == "allow-remote-config-modification") {
                 var enabled = handler.get_option(id) != "N";
                 el.attributes.toggleClass("selected", enabled);
                 el.attributes.toggleClass("line-through", !enabled);
             } else if (id.indexOf("allow-") == 0) {
-                if (id == "allow-remote-config-modification") {
-                    var enabled = handler.get_option(id) != "N";
-                } else {
-                    var enabled = handler.get_option(id) == "Y";
-                }
+                var enabled = handler.get_option(id) == "Y";
                 el.attributes.toggleClass("selected", enabled);
                 el.attributes.toggleClass("line-through", !enabled);
             } else if (id == "whitelist") {

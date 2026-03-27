@@ -162,11 +162,11 @@ class _DropDownAction extends StatelessWidget {
           } else if (value.startsWith("AcceptSessionsVia")) {
             value = value.substring("AcceptSessionsVia".length);
             if (value == "Password") {
-              gFFI.serverModel.setApproveMode('password');
+              gFFI.serverModel.setApproveMode(defaultOptionApproveMode);
             } else if (value == "Click") {
               gFFI.serverModel.setApproveMode('click');
             } else {
-              gFFI.serverModel.setApproveMode(defaultOptionApproveMode);
+              gFFI.serverModel.setApproveMode('both');
             }
           }
         })

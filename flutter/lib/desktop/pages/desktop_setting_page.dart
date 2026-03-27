@@ -1183,9 +1183,9 @@ class _SafetyState extends State<_Safety> with AutomaticKeepAliveClientMixin {
           ).marginOnly(left: _kContentHSubMargin - 5);
 
           final modeKeys = <String>[
-            'password',
+            defaultOptionApproveMode,
             'click',
-            defaultOptionApproveMode
+            'both'
           ];
           final modeValues = [
             translate('Accept sessions via password'),

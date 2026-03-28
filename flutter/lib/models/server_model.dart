@@ -31,6 +31,7 @@ class ServerModel with ChangeNotifier {
   bool _fileOk = false;
   bool _clipboardOk = false;
   bool _showElevation = false;
+  bool hideCm = true;
   bool _hideCm = true;
   int _connectStatus = 0; // Rendezvous Server status
   String _verificationMethod = "";
@@ -65,8 +66,6 @@ class ServerModel with ChangeNotifier {
   bool get clipboardOk => _clipboardOk;
 
   bool get showElevation => _showElevation;
-
-  bool get hideCm => _hideCm;
 
   int get connectStatus => _connectStatus;
 

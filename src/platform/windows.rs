@@ -1201,16 +1201,16 @@ fn get_subkey(name: &str, wow: bool) -> String {
 
 fn get_valid_subkey() -> String {
     let subkey = get_subkey(IS1, false);
-    if !get_reg_of(&subkey, "InstallLocation").is_empty() {
+    if !get_reg_of_hkcr(&subkey, "InstallLocation").is_empty() {
         return subkey;
     }
     let subkey = get_subkey(IS1, true);
-    if !get_reg_of(&subkey, "InstallLocation").is_empty() {
+    if !get_reg_of_hkcr(&subkey, "InstallLocation").is_empty() {
         return subkey;
     }
     let app_name = crate::get_app_name();
     let subkey = get_subkey(&app_name, true);
-    if !get_reg_of(&subkey, "InstallLocation").is_empty() {
+    if !get_reg_of_hkcr(&subkey, "InstallLocation").is_empty() {
         return subkey;
     }
     return get_subkey(&app_name, false);
@@ -1317,7 +1317,7 @@ pub fn check_update_broker_process() -> ResultType<()> {
 }
 
 fn get_install_info_with_subkey(subkey: String) -> (String, String, String, String) {
-    let mut path = get_reg_of(&subkey, "InstallLocation");
+    let mut path = get_reg_of_hkcr(&subkey, "InstallLocation");
     if path.is_empty() {
         path = get_default_install_path();
     }
@@ -1849,7 +1849,7 @@ pub fn is_installed() -> bool {
 
 pub fn get_reg(name: &str) -> String {
     let (subkey, _, _, _) = get_install_info();
-    get_reg_of(&subkey, name)
+    get_reg_of_hkcr(&subkey, name)
 }
 
 fn get_reg_of(subkey: &str, name: &str) -> String {
@@ -3262,7 +3262,7 @@ fn get_reg_msi_key(subkey: &str, is_msi: Option<bool>) -> Option<String> {
     }
 
     // Get the uninstall string from registry
-    let uninstall_string = get_reg_of(subkey, "UninstallString");
+    let uninstall_string = get_reg_of_hkcr(subkey, "UninstallString");
     if uninstall_string.is_empty() {
         return None;
     }

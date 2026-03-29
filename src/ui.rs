@@ -182,7 +182,8 @@ pub fn start(args: &mut [String]) {
         .ok()
         .flatten()
         .unwrap_or_default()
-        != "N";
+        == "true";
+    // ipc returns a bool string, not a bool or Y/N.
     let hide_cm = *cm::HIDE_CM.lock().unwrap();
     if !args.is_empty() && args[0] == "--cm" && hide_cm {
         // run_app calls expand(show) + run_loop, we use collapse(hide) + run_loop instead to create a hidden window

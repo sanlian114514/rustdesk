@@ -1238,12 +1238,14 @@ pub fn get_install_options() -> String {
 }
 
 // This function return Option<String>, because some registry value may be empty.
-fn get_reg_of_hkcr(subkey: &str, name: &str) -> Option<String> {
+fn get_reg_of_hkcr(subkey: &str, name: &str) -> String {
     let hkcr = RegKey::predef(HKEY_CLASSES_ROOT);
     if let Ok(tmp) = hkcr.open_subkey(subkey.replace("HKEY_CLASSES_ROOT\\", "")) {
-        return tmp.get_value(name).ok();
+        if let Ok(v) = tmp.get_value(name) {
+            return v;
+        }
     }
-    None
+    "".to_owned()
 }
 
 pub fn get_install_info() -> (String, String, String, String) {

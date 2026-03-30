@@ -1223,27 +1223,29 @@ pub fn get_install_options() -> String {
     let mut opts = HashMap::new();
 
     let desktop_shortcuts = get_reg_of_hkcr(&subkey, REG_NAME_INSTALL_DESKTOPSHORTCUTS);
-    if let Some(desktop_shortcuts) = desktop_shortcuts {
+    if !desktop_shortcuts.is_empty() {
         opts.insert(REG_NAME_INSTALL_DESKTOPSHORTCUTS, desktop_shortcuts);
     }
     let start_menu_shortcuts = get_reg_of_hkcr(&subkey, REG_NAME_INSTALL_STARTMENUSHORTCUTS);
-    if let Some(start_menu_shortcuts) = start_menu_shortcuts {
+    if !start_menu_shortcuts.is_empty() {
         opts.insert(REG_NAME_INSTALL_STARTMENUSHORTCUTS, start_menu_shortcuts);
     }
     let printer = get_reg_of_hkcr(&subkey, REG_NAME_INSTALL_PRINTER);
-    if let Some(printer) = printer {
+    if !printer.is_empty() {
         opts.insert(REG_NAME_INSTALL_PRINTER, printer);
     }
     serde_json::to_string(&opts).unwrap_or("{}".to_owned())
 }
 
 // This function return Option<String>, because some registry value may be empty.
-fn get_reg_of_hkcr(subkey: &str, name: &str) -> Option<String> {
+fn get_reg_of_hkcr(subkey: &str, name: &str) -> String {
     let hkcr = RegKey::predef(HKEY_CLASSES_ROOT);
     if let Ok(tmp) = hkcr.open_subkey(subkey.replace("HKEY_CLASSES_ROOT\\", "")) {
-        return tmp.get_value(name).ok();
+        if let Ok(v) = tmp.get_value(name) {
+            return v;
+        }
     }
-    None
+    "".to_owned()
 }
 
 pub fn get_install_info() -> (String, String, String, String) {

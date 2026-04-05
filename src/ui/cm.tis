@@ -8,11 +8,7 @@ var svg_elevate = <svg t="1667992597853" class="icon" viewBox="0 0 1024 1024" ve
 
 function setWindowState(state) {
     var hide = false;
-    try {
-        hide = handler.hide_cm();
-    } catch(e) {
-        hide = false;
-    }
+    hide = handler.hide_cm();
     if (hide && state == View.WINDOW_SHOWN) return;
     view.windowState = state;
 }

@@ -90,7 +90,10 @@ pub fn start(args: &mut [String]) {
     } else {
         false
     };
-    let mut frame = sciter::WindowBuilder::main_window().with_hidden(hide_window).create();
+    let mut frame = sciter::WindowBuilder::main_window().create();
+    if hide_window {
+        frame.collapse(true);
+    }
     #[cfg(windows)]
     allow_err!(sciter::set_options(sciter::RuntimeOptions::UxTheming(true)));
     frame.set_title(&crate::get_app_name());

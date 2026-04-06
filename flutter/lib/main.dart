@@ -288,13 +288,18 @@ void runMultiWindow(
 
 void runConnectionManagerScreen() async {
   await initEnv(kAppTypeConnectionManager);
+  final hide = await bind.cmGetConfig(name: "allow-hide-cm") != 'N';
+  gFFI.serverModel.hideCm = hide;
+  if (hide) {
+    // Hide window before running the app to prevent flash
+    await windowManager.setOpacity(0);
+    await windowManager.hide();
+  }
   _runApp(
     '',
     const DesktopServerPage(),
     MyTheme.currentThemeMode(),
   );
-  final hide = await bind.cmGetConfig(name: "allow-hide-cm") != 'N';
-  gFFI.serverModel.hideCm = hide;
   if (hide) {
     await hideCmWindow(isStartup: true);
   } else {

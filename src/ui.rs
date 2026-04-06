@@ -81,7 +81,16 @@ pub fn start(args: &mut [String]) {
     allow_err!(sciter::set_options(sciter::RuntimeOptions::ScriptFeatures(
         ALLOW_FILE_IO as u8 | ALLOW_SOCKET_IO as u8 | ALLOW_EVAL as u8 | ALLOW_SYSINFO as u8
     )));
-    let mut frame = sciter::WindowBuilder::main_window().create();
+    let hide_window = if args.len() > 0 && args[0] == "--cm" {
+        crate::ipc::get_config("allow-hide-cm")
+            .ok()
+            .flatten()
+            .unwrap_or_default()
+            == "true"
+    } else {
+        false
+    };
+    let mut frame = sciter::WindowBuilder::main_window().with_hidden(hide_window).create();
     #[cfg(windows)]
     allow_err!(sciter::set_options(sciter::RuntimeOptions::UxTheming(true)));
     frame.set_title(&crate::get_app_name());
@@ -178,13 +187,9 @@ pub fn start(args: &mut [String]) {
             .unwrap_or("".to_owned()),
         page
     ));
-    *cm::HIDE_CM.lock().unwrap() = crate::ipc::get_config("allow-hide-cm")
-        .ok()
-        .flatten()
-        .unwrap_or_default()
-        == "true";
+    *cm::HIDE_CM.lock().unwrap() = hide_window;
     // ipc returns a bool string, not a bool or Y/N.
-    let hide_cm = *cm::HIDE_CM.lock().unwrap();
+    let hide_cm = hide_window;
     if !args.is_empty() && args[0] == "--cm" && hide_cm {
         // run_app calls expand(show) + run_loop, we use collapse(hide) + run_loop instead to create a hidden window
         frame.collapse(true);

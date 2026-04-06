@@ -7,6 +7,10 @@ on:
         description: '请输入要发布的 tag'
         required: true
         default: 'sanlian'
+      build-targets:
+        description: '选择要构建的目标，用逗号分隔，如 all, windows, windows-flutter, windows-sciter, linux, linux-flutter, linux-sciter, ios, macos, android, flutter, sciter'
+        required: false
+        default: 'all'
 
 jobs:
   run-flutter-nightly-build:
@@ -15,3 +19,4 @@ jobs:
     with:
       upload-artifact: true
       upload-tag: ${{ github.event.inputs.tag }}
+      build-targets: ${{ github.event.inputs.build-targets }}

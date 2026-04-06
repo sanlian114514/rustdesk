@@ -9,6 +9,9 @@ on:
       upload-tag:
         type: string
         default: "nightly"
+      build-targets:
+        type: string
+        default: "all"
 
 # NOTE: F-Droid builder script 'flutter/build_fdroid.sh' reads environment
 # variables from this workflow!
@@ -68,11 +71,12 @@ jobs:
     name: ${{ matrix.job.target }}
     needs: [build-RustDeskTempTopMostWindow, generate-bridge]
     runs-on: ${{ matrix.job.os }}
+    if: contains(inputs.build-targets, 'all') || contains(inputs.build-targets, 'windows') || contains(inputs.build-targets, 'windows-flutter') || contains(inputs.build-targets, 'flutter')
     strategy:
       fail-fast: false
       matrix:
         job:
-          # - { target: i686-pc-windows-msvc        , os: windows-2022                  }
+          - { target: i686-pc-windows-msvc        , os: windows-2022, arch: x86, vcpkg-triplet: x86-windows-static }
           # - { target: x86_64-pc-windows-gnu       , os: windows-2022                  }
           - {
               target: x86_64-pc-windows-msvc,
@@ -288,8 +292,7 @@ jobs:
   build-for-windows-sciter:
     name: ${{ matrix.job.target }} (${{ matrix.job.os }})
     runs-on: ${{ matrix.job.os }}
-    # Temporarily disable this action due to additional test is needed.
-    # if: false
+    if: contains(inputs.build-targets, 'all') || contains(inputs.build-targets, 'windows') || contains(inputs.build-targets, 'windows-sciter') || contains(inputs.build-targets, 'sciter')
     strategy:
       fail-fast: false
       matrix:
@@ -437,7 +440,7 @@ jobs:
             ./SignOutput/rustdesk-*.exe
 
   build-rustdesk-ios:
-    if: ${{ inputs.upload-artifact }}
+    if: inputs.upload-artifact && (contains(inputs.build-targets, 'all') || contains(inputs.build-targets, 'ios') || contains(inputs.build-targets, 'flutter'))
     name: build rustdesk ios ipa
     runs-on: ${{ matrix.job.os }}
     needs: [generate-bridge]
@@ -561,6 +564,7 @@ jobs:
     name: ${{ matrix.job.target }}
     runs-on: ${{ matrix.job.os }}
     needs: [generate-bridge]
+    if: contains(inputs.build-targets, 'all') || contains(inputs.build-targets, 'macos') || contains(inputs.build-targets, 'flutter')
     strategy:
       fail-fast: false
       matrix:
@@ -823,6 +827,7 @@ jobs:
     needs: [generate-bridge]
     name: build rustdesk android apk ${{ matrix.job.target }}
     runs-on: ${{ matrix.job.os }}
+    if: contains(inputs.build-targets, 'all') || contains(inputs.build-targets, 'android') || contains(inputs.build-targets, 'flutter')
     strategy:
       fail-fast: false
       matrix:
@@ -1301,6 +1306,7 @@ jobs:
     needs: [generate-bridge]
     name: build rustdesk linux ${{ matrix.job.target }}
     runs-on: ${{ matrix.job.on }}
+    if: contains(inputs.build-targets, 'all') || contains(inputs.build-targets, 'linux') || contains(inputs.build-targets, 'linux-flutter') || contains(inputs.build-targets, 'flutter')
     strategy:
       fail-fast: false
       matrix:
@@ -1636,7 +1642,7 @@ jobs:
             res/rustdesk-${{ env.VERSION }}*.zst
 
   build-rustdesk-linux-sciter:
-    if: ${{ inputs.upload-artifact }}
+    if: inputs.upload-artifact && (contains(inputs.build-targets, 'all') || contains(inputs.build-targets, 'linux') || contains(inputs.build-targets, 'linux-sciter') || contains(inputs.build-targets, 'sciter'))
     runs-on: ${{ matrix.job.on }}
     name: build-rustdesk-linux-sciter ${{ matrix.job.target }}
     strategy:

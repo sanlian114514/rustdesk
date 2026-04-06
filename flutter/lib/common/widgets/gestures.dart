@@ -32,6 +32,11 @@ class CustomTouchGestureRecognizer extends ScaleGestureRecognizer {
   GestureScaleUpdateCallback? onTwoFingerScaleUpdate;
   GestureScaleEndCallback? onTwoFingerScaleEnd;
 
+  // twoFingerVerticalDrag
+  GestureDragStartCallback? onTwoFingerVerticalDragStart;
+  GestureDragUpdateCallback? onTwoFingerVerticalDragUpdate;
+  GestureDragEndCallback? onTwoFingerVerticalDragEnd;
+
   // threeFingerVerticalDrag
   GestureDragStartCallback? onThreeFingerVerticalDragStart;
   GestureDragUpdateCallback? onThreeFingerVerticalDragUpdate;
@@ -69,6 +74,10 @@ class CustomTouchGestureRecognizer extends ScaleGestureRecognizer {
           case GestureState.twoFingerScale:
             if (onTwoFingerScaleUpdate != null) {
               onTwoFingerScaleUpdate!(d);
+            }
+            // Check for vertical scroll with two fingers
+            if (onTwoFingerVerticalDragUpdate != null && d.focalPointDelta.dy.abs() > d.focalPointDelta.dx.abs()) {
+              onTwoFingerVerticalDragUpdate!(_getDragUpdateDetails(d));
             }
             break;
           case GestureState.threeFingerVerticalDrag:

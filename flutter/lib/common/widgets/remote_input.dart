@@ -487,8 +487,9 @@ class _RawTouchGestureDetectorRegionState
       // mobile
       ffi.canvasModel.updateScale(d.scale / _scale, d.focalPoint);
       _scale = d.scale;
-      ffi.canvasModel.panX(d.focalPointDelta.dx);
-      ffi.canvasModel.panY(d.focalPointDelta.dy);
+      // Removed pan functionality for two-finger scroll
+      // ffi.canvasModel.panX(d.focalPointDelta.dx);
+      // ffi.canvasModel.panY(d.focalPointDelta.dy);
     }
   }
 
@@ -514,6 +515,18 @@ class _RawTouchGestureDetectorRegionState
   }
 
   get onHoldDragCancel => null;
+  get onTwoFingerVerticalDragUpdate => ffi.ffiModel.isPeerAndroid
+      ? null
+      : (d) {
+          _mouseScrollIntegral += d.delta.dy / 4;
+          if (_mouseScrollIntegral > 1) {
+            inputModel.scroll(1);
+            _mouseScrollIntegral = 0;
+          } else if (_mouseScrollIntegral < -1) {
+            inputModel.scroll(-1);
+            _mouseScrollIntegral = 0;
+          }
+        };
   get onThreeFingerVerticalDragUpdate => ffi.ffiModel.isPeerAndroid
       ? null
       : (d) {
@@ -582,6 +595,7 @@ class _RawTouchGestureDetectorRegionState
           ..onTwoFingerScaleStart = onTwoFingerScaleStart
           ..onTwoFingerScaleUpdate = onTwoFingerScaleUpdate
           ..onTwoFingerScaleEnd = onTwoFingerScaleEnd
+          ..onTwoFingerVerticalDragUpdate = onTwoFingerVerticalDragUpdate
           ..onThreeFingerVerticalDragUpdate = onThreeFingerVerticalDragUpdate;
       }),
     };

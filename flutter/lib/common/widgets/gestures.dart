@@ -43,6 +43,7 @@ class CustomTouchGestureRecognizer extends ScaleGestureRecognizer {
   GestureDragEndCallback? onThreeFingerVerticalDragEnd;
 
   var _currentState = GestureState.none;
+  bool _isTwoFingerScrollMode = false;
   Timer? _debounceTimer;
 
   void _init() {
@@ -72,12 +73,23 @@ class CustomTouchGestureRecognizer extends ScaleGestureRecognizer {
             }
             break;
           case GestureState.twoFingerScale:
-            if (onTwoFingerScaleUpdate != null) {
-              onTwoFingerScaleUpdate!(d);
-            }
-            // Check for vertical scroll with two fingers
-            if (onTwoFingerVerticalDragUpdate != null && d.focalPointDelta.dy.abs() > d.focalPointDelta.dx.abs()) {
+            final scaleChange = (d.scale - 1.0).abs();
+            final verticalDelta = d.focalPointDelta.dy.abs();
+            final horizontalDelta = d.focalPointDelta.dx.abs();
+            final canScroll = onTwoFingerVerticalDragUpdate != null &&
+                scaleChange < 0.03 &&
+                verticalDelta > horizontalDelta * 2.5 &&
+                verticalDelta > 5.0;
+
+            if (_isTwoFingerScrollMode) {
               onTwoFingerVerticalDragUpdate!(_getDragUpdateDetails(d));
+            } else if (canScroll) {
+              _isTwoFingerScrollMode = true;
+              onTwoFingerVerticalDragUpdate!(_getDragUpdateDetails(d));
+            } else {
+              if (onTwoFingerScaleUpdate != null) {
+                onTwoFingerScaleUpdate!(d);
+              }
             }
             break;
           case GestureState.threeFingerVerticalDrag:
@@ -104,9 +116,16 @@ class CustomTouchGestureRecognizer extends ScaleGestureRecognizer {
           break;
         case GestureState.twoFingerScale:
           debugPrint("TwoFingerState.scale onEnd");
-          if (onTwoFingerScaleEnd != null) {
-            onTwoFingerScaleEnd!(d);
+          if (_isTwoFingerScrollMode) {
+            if (onTwoFingerVerticalDragEnd != null) {
+              onTwoFingerVerticalDragEnd!(_getDragEndDetails(d));
+            }
+          } else {
+            if (onTwoFingerScaleEnd != null) {
+              onTwoFingerScaleEnd!(d);
+            }
           }
+          _isTwoFingerScrollMode = false;
           if (isSpecialHoldDragActive) {
             // If we are in special drag mode, we need to reset the state.
             // Otherwise, the next `onTwoFingerScaleUpdate()` will handle a wrong `focalPoint`.
@@ -154,6 +173,7 @@ class CustomTouchGestureRecognizer extends ScaleGestureRecognizer {
   void onTwoFingerStartDebounce(ScaleUpdateDetails d) {
     start(ScaleUpdateDetails d) {
       _currentState = GestureState.twoFingerScale;
+      _isTwoFingerScrollMode = false;
       if (onTwoFingerScaleStart != null) {
         onTwoFingerScaleStart!(ScaleStartDetails(
             localFocalPoint: d.localFocalPoint, focalPoint: d.focalPoint));
@@ -190,7 +210,7 @@ class CustomTouchGestureRecognizer extends ScaleGestureRecognizer {
         }
         break;
       case GestureState.twoFingerScale:
-        // Reset scale state if needed, currently self-contained
+        _isTwoFingerScrollMode = false;
         break;
       case GestureState.threeFingerVerticalDrag:
         // Reset drag state if needed, currently self-contained

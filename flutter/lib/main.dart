@@ -288,7 +288,8 @@ void runMultiWindow(
 
 void runConnectionManagerScreen() async {
   await initEnv(kAppTypeConnectionManager);
-  final hide = await bind.cmGetConfig(name: "allow-hide-cm") != 'N';
+  // bind.cmGetConfig -> src/ipc.rs:get_config(), so it returns string 'true' or 'false', not Y/N.
+  final hide = await bind.cmGetConfig(name: "allow-hide-cm") == 'true';
   gFFI.serverModel.hideCm = hide;
   if (hide) {
     // Hide window before running the app to prevent flash
@@ -311,7 +312,7 @@ void runConnectionManagerScreen() async {
 }
 
 bool _isCmReadyToShow = false;
-
+// isStartup means we are starting the app with cm window, not first time show cm window.
 showCmWindow({bool isStartup = false}) async {
   if (isStartup) {
     WindowOptions windowOptions = getHiddenTitleBarWindowOptions(
@@ -328,14 +329,12 @@ showCmWindow({bool isStartup = false}) async {
         kConnectionManagerWindowSizeClosedChat, Alignment.topRight);
     _isCmReadyToShow = true;
   } else if (_isCmReadyToShow) {
-    if (await windowManager.getOpacity() != 1) {
-      await windowManager.setOpacity(1);
-      await windowManager.focus();
-      await windowManager.minimize(); //needed
-      await windowManager.setSizeAlignment(
-          kConnectionManagerWindowSizeClosedChat, Alignment.topRight);
-      windowOnTop(null);
-    }
+    await windowManager.setOpacity(1);
+    await windowManager.focus();
+    await windowManager.minimize(); //needed
+    await windowManager.setSizeAlignment(
+        kConnectionManagerWindowSizeClosedChat, Alignment.topRight);
+    windowOnTop(null);
   }
 }
 
@@ -350,12 +349,10 @@ hideCmWindow({bool isStartup = false}) async {
     await windowManager.hide();
     _isCmReadyToShow = true;
   } else if (_isCmReadyToShow) {
-    if (await windowManager.getOpacity() != 0) {
-      await windowManager.setOpacity(0);
-      bind.mainHideDock();
-      await windowManager.minimize();
-      await windowManager.hide();
-    }
+    await windowManager.setOpacity(0);
+    bind.mainHideDock();
+    await windowManager.minimize();
+    await windowManager.hide();
   }
 }
 

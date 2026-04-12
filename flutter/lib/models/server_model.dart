@@ -31,6 +31,7 @@ class ServerModel with ChangeNotifier {
   bool _fileOk = false;
   bool _clipboardOk = false;
   bool _showElevation = false;
+  bool hideCm = true;
   bool _hideCm = true;
   int _connectStatus = 0; // Rendezvous Server status
   String _verificationMethod = "";
@@ -65,14 +66,6 @@ class ServerModel with ChangeNotifier {
   bool get clipboardOk => _clipboardOk;
 
   bool get showElevation => _showElevation;
-
-  bool get hideCm => _hideCm;
-  set hideCm(bool value) {
-    if (_hideCm != value) {
-      _hideCm = value;
-      notifyListeners();
-    }
-  }
 
   int get connectStatus => _connectStatus;
 
@@ -145,15 +138,11 @@ class ServerModel with ChangeNotifier {
     // initital _hideCm at startup
     final verificationMethod =
         bind.mainGetOptionSync(key: kOptionVerificationMethod);
-    var OrigApproveMode = bind.mainGetOptionSync(key: kOptionApproveMode);
-    if (OrigApproveMode == '') {
-      OrigApproveMode = 'password';
-    }
-    final approveMode = OrigApproveMode;
-    _hideCm = option2bool(
+    var approveMode = bind.mainGetOptionSync(key: kOptionApproveMode);
+    hideCm = option2bool(
         'allow-hide-cm', bind.mainGetOptionSync(key: 'allow-hide-cm'));
-    if (approveMode != 'password') {
-      _hideCm = false;
+    if (approveMode != '') {
+      hideCm = false;
     }
 
     timerCallback() async {
@@ -179,7 +168,7 @@ class ServerModel with ChangeNotifier {
             }
           } else {
             _zeroClientLengthCounter = 0;
-            if (!_hideCm) showCmWindow();
+            if (!hideCm) showCmWindow();
           }
         }
       }
@@ -245,14 +234,10 @@ class ServerModel with ChangeNotifier {
         await bind.mainGetOption(key: "temporary-password-length");
     final numericOneTimePassword =
         await mainGetBoolOption(kOptionAllowNumericOneTimePassword);
-    var OrigApproveMode = bind.mainGetOptionSync(key: kOptionApproveMode);
-    if (OrigApproveMode == '') {
-      OrigApproveMode = 'password';
-    }
-    final approveMode = OrigApproveMode;
+    var approveMode = bind.mainGetOptionSync(key: kOptionApproveMode);
     var hideCm = option2bool(
         'allow-hide-cm', await bind.mainGetOption(key: 'allow-hide-cm'));
-    if (approveMode != 'password') {
+    if (approveMode != '') {
       hideCm = false;
     }
 
@@ -541,7 +526,7 @@ class ServerModel with ChangeNotifier {
     if (desktopType == DesktopType.cm) {
       if (_clients.isEmpty) {
         hideCmWindow();
-      } else if (!_hideCm) {
+      } else if (!hideCm) {
         showCmWindow();
       }
     }
@@ -576,7 +561,7 @@ class ServerModel with ChangeNotifier {
         _clients.removeAt(index_disconnected);
         tabController.remove(index_disconnected);
       }
-      if (desktopType == DesktopType.cm && !_hideCm) {
+      if (desktopType == DesktopType.cm && !hideCm) {
         showCmWindow();
       }
       scrollToBottom();
@@ -676,7 +661,7 @@ class ServerModel with ChangeNotifier {
         ),
         actions: [
           dialogButton("Dismiss", onPressed: cancel, isOutline: true),
-          if (approveMode != 'password')
+          if (approveMode != '')
             dialogButton("Accept", onPressed: submit),
         ],
         onSubmit: submit,
